@@ -1,13 +1,82 @@
 var secret = require('./secret.js');
 
 var Twit = require('twit');
+const Hapi = require('hapi');
+const Blipp = require('blipp');
+const Vision = require('vision');
+const Inert = require('inert');
+const Path = require('path');
+const Handlebars = require('handlebars');
+const FormData = require("form-data");
 
+const server = new Hapi.Server({
+	connections: {
+		routes: {
+			files: {
+				relativeTo: Path.join(__dirname, 'public')
+			}
+		}
+	}
+});
+
+server.connection({
+	port: (process.env.PORT || 3000)
+});
+
+server.register([Blipp, Inert, Vision], () => {});
+
+server.views({
+	engines: {
+		html: Handlebars
+	},
+	path: 'views',
+	layoutPath: 'views/layout',
+	layout: 'layout',
+	helpersPath: 'views/helpers'
+});
 
 var client = new Twit({
-    consumer_key: secret.consumer_key,
-    consumer_secret: secret["consumer_secret"],
-    access_token: secret["access_token"],
-    access_token_secret: secret["access_token_secret"]
+	consumer_key: secret.consumer_key,
+	consumer_secret: secret["consumer_secret"],
+	access_token: secret["access_token"],
+	access_token_secret: secret["access_token_secret"]
+});
+
+//routes
+
+server.route({
+	method: 'GET',
+	path: '/',
+	handler: function (request, reply) {
+		var tweetString = '';
+
+		client.get('search/tweets', {
+			q: ' since:2017-03-01',
+			geocode: "25.719056,-80.276869,1mi"
+		}, function (err, tweets, response) {
+
+			tweetString += "number of tweets: ";
+			tweetString += tweets["statuses"].length;
+			tweetString += "\n";
+			for (var i = 0; i < tweets["statuses"].length; i++) {
+				tweetString += tweets["statuses"][i]["text"];
+				tweetString += "\n";
+				tweetString += tweets["statuses"][i]["user"]["screen_name"];
+				tweetString += "\n";
+				tweetString += tweets["statuses"][i]["user"]["url"];
+				tweetString += "\n";
+				tweetString += tweets["statuses"][i]["user"]["created_at"];
+				tweetString += "\n";
+				tweetString += "\n";
+			}
+
+			reply.view('index', {
+				tweetString: tweetString
+			});
+		});
+
+
+	}
 });
 
 
@@ -86,20 +155,27 @@ client.get('search/tweets', {
 
 ////Finding tweets based off of geo location and date
 
+//client.get('search/tweets', {
+//    q: ' since:2017-03-01',
+//    geocode: "25.719056,-80.276869,1mi"
+//}, function (err, tweets, response) {
+//
+//    console.log("number of tweets: " + tweets["statuses"].length);
+//    for (var i = 0; i < tweets["statuses"].length; i++) {
+//        console.log(tweets["statuses"][i]["text"]);
+//        console.log(tweets["statuses"][i]["user"]["screen_name"]);
+//        console.log(tweets["statuses"][i]["user"]["url"]);
+//        console.log(tweets["statuses"][i]["user"]["created_at"]);
+//        console.log("");
+//    }
+//});
 
-client.get('search/tweets', {
-    q: ' since:2017-03-01',
-    geocode: "25.719056,-80.276869,1mi"
-}, function (err, tweets, response) {
 
-    console.log("number of tweets: " + tweets["statuses"].length);
-    for (var i = 0; i < tweets["statuses"].length; i++) {
-        console.log(tweets["statuses"][i]["text"]);
-        console.log(tweets["statuses"][i]["user"]["screen_name"]);
-        console.log(tweets["statuses"][i]["user"]["url"]);
-        console.log(tweets["statuses"][i]["user"]["created_at"]);
-        console.log("");
-    }
+server.start((err) => {
+
+	if (err) {
+		throw err;
+	}
+	console.log(`Server running at: ${server.info.uri}`);
+
 });
-
-
