@@ -48,26 +48,21 @@ server.route({
 	method: 'GET',
 	path: '/',
 	handler: function (request, reply) {
-		var tweetString = '';
+		var tweetString = [];
 
 		client.get('search/tweets', {
 			q: ' since:2017-03-01',
 			geocode: "25.719056,-80.276869,1mi"
 		}, function (err, tweets, response) {
-
-			tweetString += "number of tweets: ";
-			tweetString += tweets["statuses"].length;
-			tweetString += "\n";
+			var string = "number of tweets: " + tweets["statuses"].length;
+			tweetString.push(string);
+			tweetString.push("");			
+			
 			for (var i = 0; i < tweets["statuses"].length; i++) {
-				tweetString += tweets["statuses"][i]["text"];
-				tweetString += "\n";
-				tweetString += tweets["statuses"][i]["user"]["screen_name"];
-				tweetString += "\n";
-				tweetString += tweets["statuses"][i]["user"]["url"];
-				tweetString += "\n";
-				tweetString += tweets["statuses"][i]["user"]["created_at"];
-				tweetString += "\n";
-				tweetString += "\n";
+				tweetString.push(tweets["statuses"][i]["text"]);
+				tweetString.push('<a href="https://twitter.com/' + tweets["statuses"][i]["user"]["screen_name"] + '">@' + tweets["statuses"][i]["user"]["screen_name"] + '</a>');
+				tweetString.push(tweets["statuses"][i]["created_at"]);
+				tweetString.push("");
 			}
 
 			reply.view('index', {
