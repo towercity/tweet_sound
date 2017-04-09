@@ -69,8 +69,18 @@ server.route({
 				tweetString: tweetString
 			});
 		});
+	}
+});
 
-
+server.route({
+	method: 'GET',
+	path: '/{param*}',
+	handler: {
+		directory: {
+			path: './',
+			listing: false,
+			index: false
+		}
 	}
 });
 
