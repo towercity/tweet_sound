@@ -66,7 +66,8 @@ server.route({
 			}
 
 			reply.view('index', {
-				tweetString: tweetString
+				tweetString: tweetString,
+				tweetsAmount: tweets["statuses"].length
 			});
 		});
 	}

@@ -2,3 +2,55 @@
 <p>{{#tweets tweetString}}{{/tweets}}</p>
 
 <script src="/libs/Tone.min.js"></script>
+
+
+<script>
+	//set the bpm and time signature first
+	Tone.Transport.timeSignature = [6, 4];
+	Tone.Transport.bpm.value = 150;
+	
+	//L/R channel merging
+	var merge = new Tone.Merge();
+	//a little reverb
+	var reverb = new Tone.Freeverb({
+		"roomSize": 0.7,
+		"wet": 0.5
+	});
+	merge.chain(reverb, Tone.Master);
+	//the synth settings
+	var synthSettings = {
+		"oscillator": {
+			"detune": 0,
+			"type": "custom",
+			"partials": [2, 1, 2, 2],
+			"phase": 0,
+			"volume": 0
+		},
+		"envelope": {
+			"attack": 0.002,
+			"decay": 0.7,
+			"sustain": 0.9,
+			"release": 3,
+		},
+		"portamento": 0.01,
+		"volume": -20
+	};
+	
+	//left and right synthesizers
+	var synthL = new Tone.Synth(synthSettings).connect(merge.left);
+	var synthR = new Tone.Synth(synthSettings).connect(merge.right);
+	
+	//the two Tone.Sequences
+	var partL = new Tone.Sequence(function(time, note) {
+		synthL.triggerAttackRelease(note, "8n", time);
+	}, ["E4", "F#4", "B4", "C#5", "D5", "F#4", "E4", "C#5", "B4", "F#4", "D5", "C#5"], "8n").start();
+	var partR = new Tone.Sequence(function(time, note) {
+		synthR.triggerAttackRelease(note, "8n", time);
+	}, ["E2", "F#2", "B2", "C#3", "D3", "F#2", "E2", "C#3", "B2", "F#2", "D3", "C#3"], "8n").start("2m");
+
+	//set the playback rate of the right part to be slightly slower
+	partR.playbackRate = ({{tweetsAmount}} / 15);
+	
+	Tone.Transport.start("+0.1");
+
+</script>
