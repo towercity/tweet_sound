@@ -51,10 +51,11 @@ server.route({
 		var tweetString = [];
 
 		client.get('search/tweets', {
-			q: ' since:2017-03-01',
-			geocode: "25.719056,-80.276869,1mi"
+			geocode: "25.719056,-80.276869,1mi",
+			q: ''
 		}, function (err, tweets, response) {
-			var string = "number of tweets: " + tweets["statuses"].length;
+			var tLength = tweets["statuses"].length
+			var string = "number of tweets: " + tLength;
 			tweetString.push(string);
 			tweetString.push("");			
 			
@@ -64,10 +65,14 @@ server.route({
 				tweetString.push(tweets["statuses"][i]["created_at"]);
 				tweetString.push("");
 			}
+			
+			if (tLength === 0) {
+				tLength = 0.5;
+			}
 
 			reply.view('index', {
 				tweetString: tweetString,
-				tweetsAmount: tweets["statuses"].length
+				tweetsAmount: tLength
 			});
 		});
 	}

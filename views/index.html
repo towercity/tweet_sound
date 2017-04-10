@@ -5,72 +5,86 @@
 
 
 <script>
-	Tone.Transport.bpm.value = 180;
-
-	var synth1 = new Tone.MonoSynth().toMaster();
-	var synth2 = new Tone.MonoSynth().toMaster();
-	var synth3 = new Tone.MonoSynth().toMaster();
-	var bass = new Tone.FMSynth().toMaster();
-
-
-	// G segment
-	synth1.triggerAttackRelease('G3', '4m');
-	synth3.triggerAttackRelease('B3', '4m');
-	synth2.triggerAttackRelease('D5', '4n', '1m');
-	synth2.triggerAttackRelease('B4', '4n', '1m + 4n');
-	synth2.triggerAttackRelease('D4', '1m + 2n', '1m + 4n * 2');
+	Tone.Transport.bpm.value = {{tweetsAmount}} * 12;
 	
-	bass.triggerAttackRelease('G2', '4n');
-	bass.triggerAttackRelease('G2', '4n', '4n');
-	bass.triggerAttackRelease('G2', '4n', '4n *2');
-	bass.triggerAttackRelease('G2', '4n', '4n * 3');
-	bass.triggerAttackRelease('G2', '4n', '1m');
-	bass.triggerAttackRelease('G2', '4n', '1m + 4n');
-	bass.triggerAttackRelease('G2', '4n', '1m + 4n *2');
-	bass.triggerAttackRelease('G2', '4n', '1m + 4n * 3');
+	var merge = new Tone.Merge();
 
-	synth2.triggerAttackRelease('D5', '4n', '3m');
-	synth2.triggerAttackRelease('B4', '4n', '3m + 4n');
-	synth2.triggerAttackRelease('D4', '1m + 2n', '3m + 4n * 2');
+	var reverb = new Tone.Freeverb({
+			"roomSize" : 0.4,
+			"wet" : 0.5
+		});
 	
-	bass.triggerAttackRelease('G2', '4n', '2m');
-	bass.triggerAttackRelease('G2', '4n', '2m + 4n');
-	bass.triggerAttackRelease('G2', '4n', '2m + 4n *2');
-	bass.triggerAttackRelease('G2', '4n', '2m + 4n * 3');
-	bass.triggerAttackRelease('G2', '4n', '3m');
-	bass.triggerAttackRelease('G2', '4n', '3m + 4n');
-	bass.triggerAttackRelease('G2', '4n', '3m + 4n *2');
-	bass.triggerAttackRelease('G2', '4n', '3m + 4n * 3');
+	merge.chain(reverb, Tone.Master);
 	
-	// C
-	synth1.triggerAttackRelease('C4', '4m', '4m');
-	synth1.triggerAttackRelease('E4', '4m', '4m');
-	synth2.triggerAttackRelease('D5', '4n', '5m');
-	synth2.triggerAttackRelease('B4', '4n', '5m + 4n');
-	synth2.triggerAttackRelease('E4', '1m + 2n', '5m + 4n * 2');
-	
-	bass.triggerAttackRelease('C2', '4n', '4m');
-	bass.triggerAttackRelease('C2', '4n', '4m + 4n');
-	bass.triggerAttackRelease('C2', '4n', '4m + 4n *2');
-	bass.triggerAttackRelease('C2', '4n', '4m + 4n * 3');
-	bass.triggerAttackRelease('C2', '4n', '5m');
-	bass.triggerAttackRelease('C2', '4n', '5m + 4n');
-	bass.triggerAttackRelease('C2', '4n', '5m + 4n *2');
-	bass.triggerAttackRelease('C2', '4n', '5m + 4n * 3');
 
-	synth2.triggerAttackRelease('D5', '4n', '7m');
-	synth2.triggerAttackRelease('B4', '4n', '7m + 4n');
-	synth2.triggerAttackRelease('E4', '1m + 2n', '7m + 4n * 2');
+	var kick = new Tone.MembraneSynth({
+		"envelope": {
+			"sustain": 0,
+			"attack": 0.02,
+			"decay": 0.8
+		},
+		"octaves": 10
+	}).toMaster();
 	
-	bass.triggerAttackRelease('C2', '4n', '6m');
-	bass.triggerAttackRelease('C2', '4n', '6m + 4n');
-	bass.triggerAttackRelease('C2', '4n', '6m + 4n *2');
-	bass.triggerAttackRelease('C2', '4n', '6m + 4n * 3');
-	bass.triggerAttackRelease('C2', '4n', '7m');
-	bass.triggerAttackRelease('C2', '4n', '7m + 4n');
-	bass.triggerAttackRelease('C2', '4n', '7m + 4n *2');
-	bass.triggerAttackRelease('C2', '4n', '7m + 4n * 3');
+	var kickPart = new Tone.Loop(function(time) {
+		kick.triggerAttackRelease("C2", "8n", time);
+	}, "4n").start(0);
 
-	synth1.triggerAttackRelease('G3', '1m', '8m');
+	
+	var bass = new Tone.MonoSynth({
+		"volume": -10,
+		"envelope": {
+			"attack": 1,
+			"decay": 0.3,
+			"release": 2,
+		},
+		"filterEnvelope": {
+			"attack": 0.001,
+			"decay": 0.01,
+			"sustain": 0.5,
+			"baseFrequency": 200,
+			"octaves": 2.6
+		}
+	}).toMaster();
+	
+	var bassPart = new Tone.Sequence(function(time, note) {
+		bass.triggerAttackRelease(note, "4n", time);
+	}, ['G2', 'G2', 'G2', 'G2', 'G2', 'G2', 'G2', 'G2', 'G2', 'G2', 'G2', 'G2', 'G2', 'G2', 'G2', 'G2',
+	    'C2', 'C2', 'C2', 'C2', 'C2', 'C2', 'C2', 'C2', 'C2', 'C2', 'C2', 'C2', 'C2', 'C2', 'C2', 'C2']).start(0);
+	//bassPart.probability = 0.9;
+
+	
+	var mids = new Tone.PolySynth(2, Tone.AMSynth, {
+		"volume": 0,
+		"envelope": {
+			"attack": 0.5,
+			"decay": 1,
+			"release": 2,
+		},
+	}).connect(merge.left);
+	
+	var gChord = ['G3', 'B3'];
+	var cChord = ['C4', 'E4'];
+	
+	var midsPart = new Tone.Sequence(function(time, chord) {
+		mids.triggerAttackRelease(chord, '4m', time);
+	},[gChord, cChord]).start(0);
+	midsPart.probability = 0.9;
+	
+	var root = new Tone.FMSynth({
+		"volume": -8,
+		"harmonicity": 7,
+		"envelope": {
+			"attack": 0.5,
+			"decay": 1,
+			"sustain": 2,
+		},
+	}).connect(merge.right);
+	
+	var rootPart = new Tone.Sequence(function(time, note) {
+		root.triggerAttackRelease(note, '4m', time);
+	}, ['G4', 'C4'], '4m').start(0);	
+	
+	Tone.Transport.start('+0.1');
 
 </script>
