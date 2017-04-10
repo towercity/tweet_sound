@@ -6,29 +6,71 @@
 
 <script>
 	Tone.Transport.bpm.value = 180;
-	
+
 	var synth1 = new Tone.MonoSynth().toMaster();
 	var synth2 = new Tone.MonoSynth().toMaster();
+	var synth3 = new Tone.MonoSynth().toMaster();
+	var bass = new Tone.FMSynth().toMaster();
 
-	//schedule a series of notes, one per second
+
+	// G segment
 	synth1.triggerAttackRelease('G3', '4m');
+	synth3.triggerAttackRelease('B3', '4m');
 	synth2.triggerAttackRelease('D5', '4n', '1m');
 	synth2.triggerAttackRelease('B4', '4n', '1m + 4n');
 	synth2.triggerAttackRelease('D4', '1m + 2n', '1m + 4n * 2');
 	
+	bass.triggerAttackRelease('G2', '4n');
+	bass.triggerAttackRelease('G2', '4n', '4n');
+	bass.triggerAttackRelease('G2', '4n', '4n *2');
+	bass.triggerAttackRelease('G2', '4n', '4n * 3');
+	bass.triggerAttackRelease('G2', '4n', '1m');
+	bass.triggerAttackRelease('G2', '4n', '1m + 4n');
+	bass.triggerAttackRelease('G2', '4n', '1m + 4n *2');
+	bass.triggerAttackRelease('G2', '4n', '1m + 4n * 3');
+
 	synth2.triggerAttackRelease('D5', '4n', '3m');
 	synth2.triggerAttackRelease('B4', '4n', '3m + 4n');
 	synth2.triggerAttackRelease('D4', '1m + 2n', '3m + 4n * 2');
 	
+	bass.triggerAttackRelease('G2', '4n', '2m');
+	bass.triggerAttackRelease('G2', '4n', '2m + 4n');
+	bass.triggerAttackRelease('G2', '4n', '2m + 4n *2');
+	bass.triggerAttackRelease('G2', '4n', '2m + 4n * 3');
+	bass.triggerAttackRelease('G2', '4n', '3m');
+	bass.triggerAttackRelease('G2', '4n', '3m + 4n');
+	bass.triggerAttackRelease('G2', '4n', '3m + 4n *2');
+	bass.triggerAttackRelease('G2', '4n', '3m + 4n * 3');
+	
+	// C
 	synth1.triggerAttackRelease('C4', '4m', '4m');
+	synth1.triggerAttackRelease('E4', '4m', '4m');
 	synth2.triggerAttackRelease('D5', '4n', '5m');
 	synth2.triggerAttackRelease('B4', '4n', '5m + 4n');
 	synth2.triggerAttackRelease('E4', '1m + 2n', '5m + 4n * 2');
 	
+	bass.triggerAttackRelease('C2', '4n', '4m');
+	bass.triggerAttackRelease('C2', '4n', '4m + 4n');
+	bass.triggerAttackRelease('C2', '4n', '4m + 4n *2');
+	bass.triggerAttackRelease('C2', '4n', '4m + 4n * 3');
+	bass.triggerAttackRelease('C2', '4n', '5m');
+	bass.triggerAttackRelease('C2', '4n', '5m + 4n');
+	bass.triggerAttackRelease('C2', '4n', '5m + 4n *2');
+	bass.triggerAttackRelease('C2', '4n', '5m + 4n * 3');
+
 	synth2.triggerAttackRelease('D5', '4n', '7m');
 	synth2.triggerAttackRelease('B4', '4n', '7m + 4n');
 	synth2.triggerAttackRelease('E4', '1m + 2n', '7m + 4n * 2');
 	
+	bass.triggerAttackRelease('C2', '4n', '6m');
+	bass.triggerAttackRelease('C2', '4n', '6m + 4n');
+	bass.triggerAttackRelease('C2', '4n', '6m + 4n *2');
+	bass.triggerAttackRelease('C2', '4n', '6m + 4n * 3');
+	bass.triggerAttackRelease('C2', '4n', '7m');
+	bass.triggerAttackRelease('C2', '4n', '7m + 4n');
+	bass.triggerAttackRelease('C2', '4n', '7m + 4n *2');
+	bass.triggerAttackRelease('C2', '4n', '7m + 4n * 3');
+
 	synth1.triggerAttackRelease('G3', '1m', '8m');
 
 </script>
