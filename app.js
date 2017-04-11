@@ -52,11 +52,13 @@ server.route({
 
 		client.get('search/tweets', {
 			//geocode: "25.719056,-80.276869,1mi",
-			q: 'from:realdonaldtrump'
+			q: 'from:realdonaldtrump',
+			count: 100
 		}, function (err, tweets, response) {
 			
 			var tLength = tweets.statuses.length;
 			var userTweets = tweets["statuses"];
+			
 			var string = "number of tweets: " + tLength;
 			tweetString.push(string);
 			tweetString.push("");
@@ -67,14 +69,15 @@ server.route({
 				tweetString.push(userTweets[i]["created_at"]);
 				tweetString.push("");
 			}
-
-			if (tLength === 0) {
-				tLength = 0.5;
-			}
+			
+			//Generates tempo between 180 and 120 based on number of tweets in the last week
+			var tempo = ((tLength) / 100) * (180 - 120) + 120;
+			console.log('tempo: ' + tempo);
 
 			reply.view('index', {
 				tweetString: tweetString,
-				tweetsAmount: tLength
+				tweetsAmount: tLength,
+				tempo: tempo
 			});
 		});
 	}
