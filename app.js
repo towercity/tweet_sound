@@ -51,21 +51,23 @@ server.route({
 		var tweetString = [];
 
 		client.get('search/tweets', {
-			geocode: "25.719056,-80.276869,1mi",
-			q: ''
+			//geocode: "25.719056,-80.276869,1mi",
+			q: 'from:realdonaldtrump'
 		}, function (err, tweets, response) {
-			var tLength = tweets["statuses"].length
+			
+			var tLength = tweets.statuses.length;
+			var userTweets = tweets["statuses"];
 			var string = "number of tweets: " + tLength;
 			tweetString.push(string);
-			tweetString.push("");			
-			
-			for (var i = 0; i < tweets["statuses"].length; i++) {
-				tweetString.push(tweets["statuses"][i]["text"]);
-				tweetString.push('<a href="https://twitter.com/' + tweets["statuses"][i]["user"]["screen_name"] + '">@' + tweets["statuses"][i]["user"]["screen_name"] + '</a>');
-				tweetString.push(tweets["statuses"][i]["created_at"]);
+			tweetString.push("");
+
+			for (var i = 0; i < tLength; i++) {
+				tweetString.push(userTweets[i]["text"]);
+				tweetString.push('<a href="https://twitter.com/' + userTweets[i]["user"]["screen_name"] + '">@' + userTweets[i]["user"]["screen_name"] + '</a>');
+				tweetString.push(userTweets[i]["created_at"]);
 				tweetString.push("");
 			}
-			
+
 			if (tLength === 0) {
 				tLength = 0.5;
 			}
@@ -189,4 +191,5 @@ server.start((err) => {
 	}
 	console.log(`Server running at: ${server.info.uri}`);
 
+	
 });
