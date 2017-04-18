@@ -1,18 +1,41 @@
-function initSong(tempo) {
+var scale = {
+	notes: ['G3', 'A3', 'B3', 'C4', 'D4', 'E4', 'F#4',
+		    'G4', 'A4', 'B4', 'C5', 'D5', 'E5', 'F#5',
+		    'G5'],
+	createMelody: function (factor1, factor2) {
+		var melody = [];
+		for (i = factor1; i > 0; i -= factor2) {
+			melody.push(this.notes[i % this.notes.length]);
+		}
+		
+		console.log(melody);
+		return melody;
+	}
+};
+
+
+function initSong(tempo, factor1, factor2, factor3) {
 	var startTime = 0;
-	//var startTime = '8m';
+	var startTime = '8m';
 
 	Tone.Transport.bpm.value = tempo;
 	Tone.Transport.timeSignature = [4, 4];
 
 	var merge = new Tone.Merge();
+	var improvs = new Tone.Merge();
 
 	var reverb = new Tone.Freeverb({
 		"roomSize": 0.4,
 		"wet": 0.5
 	});
+	
+	var improverb = new Tone.Freeverb({
+		"roomSize": 0.8,
+		"wet": 0.2
+	});
 
 	merge.chain(reverb, Tone.Master);
+	improvs.chain(improverb, Tone.Master);
 
 	//Kick drum
 	var kick = new Tone.MembraneSynth({
@@ -101,4 +124,32 @@ function initSong(tempo) {
 		'D4', ['D5', 'B4', 'D4', 'D4'],
 		'D4', ['D5', 'B4', 'E4', 'E4'],
 		'E4', ['D5', 'B4', 'E4', 'E4']], '1m').start(startTime);
+
+
+	//improv synth
+	var improvSynthLeft = new Tone.MonoSynth({
+		"volume": 0,
+		"envelope": {
+			"attack": 0.7,
+			"decay": 1,
+			"release": 2,
+		},
+	}).connect(improvs.left);
+	
+	var improvPart = new Tone.Sequence(function (time, note) {
+		improvSynthLeft.triggerAttackRelease(note, '8n', time);
+	}, scale.createMelody(factor1, factor2), '4n').start(0);
+	
+	var improvSynthRight = new Tone.MonoSynth({
+		"volume": 0,
+		"envelope": {
+			"attack": 0.7,
+			"decay": 1,
+			"release": 2,
+		},
+	}).connect(improvs.right);
+	
+	var improvPart = new Tone.Sequence(function (time, note) {
+		improvSynthRight.triggerAttackRelease(note, '8n', time);
+	}, scale.createMelody(factor2, factor3), '4n').start(0);
 };
