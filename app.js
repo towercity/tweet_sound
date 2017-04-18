@@ -52,6 +52,16 @@ server.route({
 });
 
 server.route({
+	method: 'POST',
+	path: '/form',
+	handler: function (request, reply) {
+		var payload = request.payload;
+	
+		reply().redirect('/user/' + payload.userName);
+	}
+});
+
+server.route({
 	method: 'GET',
 	path: '/user/{user_name}',
 	handler: function (request, reply) {		

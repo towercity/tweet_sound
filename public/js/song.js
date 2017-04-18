@@ -128,7 +128,7 @@ function initSong(tempo, factor1, factor2, factor3) {
 
 	//improv synth
 	var improvSynthLeft = new Tone.MonoSynth({
-		"volume": 0,
+		"volume": -1,
 		"envelope": {
 			"attack": 0.7,
 			"decay": 1,
@@ -136,12 +136,13 @@ function initSong(tempo, factor1, factor2, factor3) {
 		},
 	}).connect(improvs.left);
 	
-	var improvPart = new Tone.Sequence(function (time, note) {
+	var improvPartLeft = new Tone.Sequence(function (time, note) {
 		improvSynthLeft.triggerAttackRelease(note, '8n', time);
 	}, scale.createMelody(factor1, factor2), '4n').start(0);
+	improvPartLeft.humanize = true;
 	
 	var improvSynthRight = new Tone.MonoSynth({
-		"volume": 0,
+		"volume": -1,
 		"envelope": {
 			"attack": 0.7,
 			"decay": 1,
@@ -149,7 +150,8 @@ function initSong(tempo, factor1, factor2, factor3) {
 		},
 	}).connect(improvs.right);
 	
-	var improvPart = new Tone.Sequence(function (time, note) {
+	var improvPartRight = new Tone.Sequence(function (time, note) {
 		improvSynthRight.triggerAttackRelease(note, '8n', time);
 	}, scale.createMelody(factor2, factor3), '4n').start(0);
+	improvPartRight.humanize = true;
 };
