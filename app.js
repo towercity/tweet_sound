@@ -56,7 +56,6 @@ server.route({
 	path: '/form',
 	handler: function (request, reply) {
 		var payload = request.payload;
-	
 		reply().redirect('/user/' + payload.userName);
 	}
 });
@@ -111,6 +110,7 @@ server.route({
 				tweetString.push(userTweets[i]["created_at"]);
 				tweetString.push("");
 			}
+		
 			
 			//Generates tempo between 180 and 120 based on number of tweets in the last week
 			var tempo = ((tLength) / 100) * (180 - 120) + 120;

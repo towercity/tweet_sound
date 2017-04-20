@@ -1,8 +1,10 @@
 <h2>Tweets</h2>
+
 <p>{{#tweets tweetString}}{{/tweets}}</p>
 
 <script src="/libs/Tone.min.js"></script>
 <script src="/js/song.js"></script>
+<script src="http://code.responsivevoice.org/responsivevoice.js"></script>
 
 <script>
 	initSong({{tempo}}, {{factor1}}, {{factor2}}, {{factor3}});
@@ -11,13 +13,7 @@
 
 <!--
 
- * Sonify a tweet--get all the info from parts of it (notes and tempo and melodies on tweets)
- * pulling the positive and negative from tweets (emotions)
- 	* create a scale object of notes, have a major-fy and minor-fy function
- * use tweet geolocation to do x-y panning
- * get the info from a user, not just a term
- * tweets over time = tempo
- * length of tweet = note length
+ 
  * rts as one synth, originals as another
  	
  -->
