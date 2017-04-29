@@ -1,19 +1,3 @@
-var scale = {
-	notes: ['G3', 'A3', 'B3', 'C4', 'D4', 'E4', 'F#4',
-		    'G4', 'A4', 'B4', 'C5', 'D5', 'E5', 'F#5',
-		    'G5'],
-	createMelody: function (factor1, factor2) {
-		var melody = [];
-		for (i = factor1; i > 0; i -= factor2) {
-			melody.push(this.notes[i % this.notes.length]);
-		}
-		
-		console.log(melody);
-		return melody;
-	}
-};
-
-
 function initSong(tempo, factor1, factor2, factor3) {
 	var startTime = 0;
 	var startTime = '8m';
@@ -155,3 +139,37 @@ function initSong(tempo, factor1, factor2, factor3) {
 	}, scale.createMelody(factor2, factor3), '4n').start(0);
 	improvPartRight.humanize = true;
 };
+
+function playPause() {
+	console.log('1: ' + Tone.Transport.state);
+	if(Tone.Transport.state === 'started') {
+		Tone.Transport.pause();
+	} else if (Tone.Transport.state === 'paused') {
+		Tone.Transport.start();
+	}
+	console.log('2: ' + Tone.Transport.state);
+}
+
+function playNotes (synth, notes, melody) {
+	var delay = '1n';
+	
+	for (i in notes) {
+		synth.triggerAttackRelease(melody[i], notes[i], delay);
+		
+		delay += ' + ';
+		delay += notes[i];
+	}
+}
+
+
+// use rests in the array?? see if TONE.JS has a rest option, then base it off remainders(?)
+// OR: one individual tweet makes ne individual note (???)
+// Is there a way to change note lenghts? via tweet length
+// ratios: mentions/total posts, 
+// multiple set songs to build off (??) (too much?)
+
+// Do some tone changes PRE song play? change init funtion and render function
+
+// a --> z, 26 notes: songify a tweet very basically, other figures are rests or sounds
+
+//use an object to pulls sounds by key values rather than array indexes--will work good some instances (eg a-->z style)

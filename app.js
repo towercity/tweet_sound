@@ -9,6 +9,8 @@ const Path = require('path');
 const Handlebars = require('handlebars');
 const FormData = require("form-data");
 
+const Music = require('./music');
+
 const server = new Hapi.Server({
 	connections: {
 		routes: {
@@ -63,7 +65,7 @@ server.route({
 server.route({
 	method: 'GET',
 	path: '/user/{user_name}',
-	handler: function (request, reply) {		
+	handler: function (request, reply) {
 		var userName = 'from:' + encodeURIComponent(request.params.user_name);
 		
 		var tweetString = [];
@@ -73,30 +75,16 @@ server.route({
 			q: userName,
 			count: 100
 		}, function (err, tweets, response) {
-			var factor1 = 0,
-				factor2 = 0;
-			var factor3 = tweets.statuses[0].user.followers_count;
+			var notes = [];
+			var melody = [];
 			
-			//grab information from user tweets to randomize melody
-			for (tweet of tweets.statuses) {				
-				factor1 += tweet.id;
-				
-				factor2 += tweet.entities.hashtags.length;
-				factor2 += tweet.entities.symbols.length;
-				factor2 += tweet.entities.user_mentions.length;
-				factor2 += tweet.entities.urls.length;
+			for (tweet of tweets.statuses) {
+				notes.push(tweet.text.length);
+				melody.push(Music.findNote(tweet.id));
 			}
 			
-			//reduce the follower count into a manageable number of notes, so as not to go crashing anyones laptop	
-			factor3 = factor3 / (Math.pow(10, (factor3.toString().length - 2)));
+			notes = Music.gatherNoteLengths(notes);
 						
-			console.log('f1: ' + factor1);
-			console.log('f2: ' + factor2);
-			console.log('f3: ' + factor3);
-			
-			factor2 = factor1 / factor2;
-			factor3 = factor2 / factor3;
-			
 			var tLength = tweets.statuses.length;
 			var userTweets = tweets["statuses"];
 			
@@ -120,9 +108,8 @@ server.route({
 				tweetString: tweetString,
 				tweetsAmount: tLength,
 				tempo: tempo,
-				factor1: factor1,
-				factor2: factor2,
-				factor3: factor3
+				notes: notes,
+				melody: melody
 			});
 		});
 	}

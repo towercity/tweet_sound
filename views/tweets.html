@@ -1,14 +1,53 @@
+<br>
+
+<div class="play-pause">
+	<button class="btn btn-default" onclick="playPause();">Play/Pause</button>
+</div>
+
 <h2>Tweets</h2>
 
 <p>{{#tweets tweetString}}{{/tweets}}</p>
 
 <script src="/libs/Tone.min.js"></script>
 <script src="/js/song.js"></script>
-<script src="http://code.responsivevoice.org/responsivevoice.js"></script>
 
 <script>
-	initSong({{tempo}}, {{factor1}}, {{factor2}}, {{factor3}});
-	Tone.Transport.start('+0.1');
+	var merge = new Tone.Merge();
+	
+	var reverb = new Tone.Freeverb({
+		"roomSize": 0.4,
+		"wet": 0.5
+	});
+	
+	merge.chain(reverb, Tone.Master);
+	
+	var arp = new Tone.FMSynth({
+		"volume": -8,
+		"harmonicity": 2,
+		"envelope": {
+			"attack": 0.1,
+			"decay": 1,
+			"sustain": 2,
+		},
+	}).connect(merge.left);
+	
+	var arp2 = new Tone.FMSynth({
+		"volume": -8,
+		"harmonicity": 8,
+		"modulationIndex": 7,
+		"envelope": {
+			"attack": 1,
+			"decay": 0.5,
+			"sustain": 0,
+		},
+	}).connect(merge.right);
+	
+	var notes = {{#toArray notes}}{{/toArray}}
+	var melody = {{#toArray melody}}{{/toArray}}
+				 
+	playNotes(arp, notes, melody);
+	playNotes(arp2, notes, melody);
+		
 </script>
 
 <!--
