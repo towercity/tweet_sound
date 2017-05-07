@@ -1,6 +1,6 @@
 # Tweet_Sound
 
-This app looks at all of a twitter user's tweets from the last week (limited to the most recent 100) and generates a short musical composition based on them. A live version of teh app is available (here)[https://safe-harbor-47098.herokuapp.com/].
+This app looks at all of a twitter user's tweets from the last week (limited to the most recent 100) and generates a short musical composition based on them. A live version of teh app is available [here](https://safe-harbor-47098.herokuapp.com/).
 
 ## How to use
 
